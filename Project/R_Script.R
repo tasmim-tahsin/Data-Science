@@ -53,4 +53,47 @@ data$`Study Hours` <- as.integer(round(data$`Study Hours`))
 mode_depression <- names(sort(table(data$Depression), decreasing = TRUE))[1]
 data$Depression[is.na(data$Depression)] <- mode_depression
 
+# Outliers Detection
+
+#Age column
+boxplot(data$Age)
+mean(data$Age)
+quantile(data$Age)
+
+x <- data$Age
+x
+iqr <- IQR(x)
+iqr
+
+lower_bound <-  22 -  1.5 * iqr
+upper_bound <-  30 + 1.5 * iqr
+
+x[x < lower_bound | x > upper_bound] <- median(x)
+x <- as.integer(round(x))
+
+boxplot(x)
+data$Age <- x
+
+
+#Academic Pressure
+boxplot(data$`Academic Pressure`)
+quantile(data$`Academic Pressure`)
+
+y <- data$`Academic Pressure`
+y
+
+iqr <- IQR(y)
+iqr
+
+lower_bound_y <-  2 -  1.5 * iqr
+upper_bound_y <-  4 + 1.5 * iqr
+
+y[y < lower_bound_y | y > upper_bound_y] <- median(y)
+y <- as.integer(round(y))
+boxplot(y)
+data$`Academic Pressure` <- y
+
+
+#Noisy Value
+
 
