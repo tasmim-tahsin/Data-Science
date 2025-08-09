@@ -125,3 +125,20 @@ data$`Family History of Mental Illness` <- data$history_numeric
 data$history_numeric <- NULL
 
 #Normalization
+#Study Hours
+data <- data %>%
+  mutate(StudyHours_normalized = (`Study Hours` - min(`Study Hours`)) / 
+           (max(`Study Hours`, na.rm = TRUE) - min(`Study Hours`)))
+data$`Study Hours`<- data$StudyHours_normalized
+data$StudyHours_normalized <- NULL
+
+#Filtering
+filtered_data1 <- data %>%
+  filter(`Study Hours` > 10 | Age < 20)
+
+filtered_data2 <- data %>%
+  filter(`Financial Stress` > 3 & Age < 20)
+
+filtered_data3 <- data %>%
+  filter(`Have you ever had suicidal thoughts ?` == 'Yes' & `Financial Stress` > 3)
+
