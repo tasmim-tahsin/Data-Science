@@ -104,3 +104,24 @@ data <- data %>%
   ))
 data$`Have you ever had suicidal thoughts ?` <- data$suicidal_thoughts_clean
 data$suicidal_thoughts_clean <- NULL
+
+#Categorical to Numerical
+#Gender
+data <- data %>%
+  mutate(gender_numeric = case_when(
+    tolower(Gender) == "male" ~ 1,
+    tolower(Gender) == "female" ~ 0
+  ))
+data$Gender <- data$gender_numeric
+data$gender_numeric <- NULL
+
+#Family History
+data <- data %>%
+  mutate(history_numeric = case_when(
+    tolower(`Family History of Mental Illness`) == "yes" ~ 1,
+    tolower(`Family History of Mental Illness`) == "no" ~ 0
+  ))
+data$`Family History of Mental Illness` <- data$history_numeric
+data$history_numeric <- NULL
+
+#Normalization
