@@ -142,3 +142,26 @@ filtered_data2 <- data %>%
 filtered_data3 <- data %>%
   filter(`Have you ever had suicidal thoughts ?` == 'Yes' & `Financial Stress` > 3)
 
+#Data Balancing
+class_distribution <- data %>%
+  count(Gender) %>%
+  mutate(percentage = n / sum(n) * 100)
+
+balanced_data <- data %>%
+  group_by(Gender) %>%
+  slice_sample(n = min(table(data$Gender)), replace = FALSE) %>%
+  ungroup()
+
+class_distribution_balanced <- balanced_data %>%
+  count(Gender) %>%
+  mutate(percentage = n / sum(n) * 100)
+
+
+#Split Train and Test data
+
+set.seed(123)
+train_data <- data %>% 
+  sample_frac(0.8)
+
+test_data <- data %>% 
+  anti_join(train_data)
