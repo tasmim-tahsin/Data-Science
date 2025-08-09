@@ -95,5 +95,12 @@ data$`Academic Pressure` <- y
 
 
 #Noisy Value
-
-
+#Suicidal thought column
+unique(data$`Have you ever had suicidal thoughts ?`)
+data <- data %>%
+  mutate(suicidal_thoughts_clean = case_when(
+    tolower(`Have you ever had suicidal thoughts ?`) %in% c("yes", "yess") ~ "Yes",
+    tolower(`Have you ever had suicidal thoughts ?`) %in% c("no", "noo") ~ "No"
+  ))
+data$`Have you ever had suicidal thoughts ?` <- data$suicidal_thoughts_clean
+data$suicidal_thoughts_clean <- NULL
