@@ -114,6 +114,7 @@ data <- data %>%
   ))
 data$Gender <- data$gender_numeric
 data$gender_numeric <- NULL
+table(data$Gender)
 
 #Family History
 data <- data %>%
@@ -123,6 +124,7 @@ data <- data %>%
   ))
 data$`Family History of Mental Illness` <- data$history_numeric
 data$history_numeric <- NULL
+table(data$`Family History of Mental Illness`)
 
 #Normalization
 #Study Hours
@@ -131,16 +133,20 @@ data <- data %>%
            (max(`Study Hours`, na.rm = TRUE) - min(`Study Hours`)))
 data$`Study Hours`<- data$StudyHours_normalized
 data$StudyHours_normalized <- NULL
+data$`Study Hours`
 
 #Filtering
 filtered_data1 <- data %>%
   filter(`Study Hours` > 10 | Age < 20)
+str(filtered_data1)
 
 filtered_data2 <- data %>%
   filter(`Financial Stress` > 3 & Age < 20)
+str(filtered_data2)
 
 filtered_data3 <- data %>%
   filter(`Have you ever had suicidal thoughts ?` == 'Yes' & `Financial Stress` > 3)
+str(filtered_data3)
 
 #Data Balancing
 class_distribution <- data %>%
@@ -165,3 +171,46 @@ train_data <- data %>%
 
 test_data <- data %>% 
   anti_join(train_data)
+str(train_data)
+str(test_data)
+
+#Central Tendencies
+sleep_duration_mode <-  names(sort(table(data$`Sleep Duration`), decreasing = TRUE))[1]
+sleep_duration_mode
+
+habit_mode <- names(sort(table(data$`Dietary Habits`), decreasing = TRUE))[1]
+habit_mode
+
+mean_age <- mean(data$Age)
+mean_age
+
+median_Academic_pressure <- median(data$`Academic Pressure`)
+median_Academic_pressure
+
+
+## For Study Hours
+study_hours_spread <- data %>%
+  summarise(
+    Attribute = "Study Hours",
+    Min = min(`Study Hours`),
+    Max = max(`Study Hours`),
+    Range = Max - Min,
+    IQR = IQR(`Study Hours`),
+    Variance = var(`Study Hours`),
+    Std_Dev = sd(`Study Hours`)
+  )
+
+## For Age
+age_spread <- data %>%
+  summarise(
+    Attribute = "Age",
+    Min = min(Age),
+    Max = max(Age),
+    Range = Max - Min,
+    IQR = IQR(Age),
+    Variance = var(Age),
+    Std_Dev = sd(Age)
+  )
+
+spread_results <- bind_rows(study_hours_spread, age_spread)
+print(spread_results)
