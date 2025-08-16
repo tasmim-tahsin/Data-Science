@@ -20,6 +20,8 @@ unique(data)
 mean(data$Age)
 mode(data$Age)
 
+data[!complete.cases(data),]
+
 
 #Missing value replacement (starts here)
 #checking missing values
@@ -32,26 +34,32 @@ colSums(is.na(data))
 data$Age[is.na(data$Age)] <- mean(data$Age, na.rm = TRUE)
 data$Age
 data$Age <- as.integer(round(data$Age))
+data[!complete.cases(data),]
 head(data)
+
 
 #Gender column
 table(data$Gender)
 mode_gender <- names(sort(table(data$Gender), decreasing = TRUE))[1]
 data$Gender[is.na(data$Gender)] <- mode_gender
+data[!complete.cases(data),]
 
 # Sleep Duration
 unique(data$`Sleep Duration`)
 mode_sleep <- names(sort(table(data$`Sleep Duration`), decreasing = TRUE))[1]
 data$`Sleep Duration`[is.na(data$`Sleep Duration`)] <- mode_sleep
+data[!complete.cases(data),]
 
 #study hours
 hist(data$`Study Hours`)
 data$`Study Hours`[is.na(data$`Study Hours`)] <- mean(data$`Study Hours`, na.rm = TRUE)
 data$`Study Hours` <- as.integer(round(data$`Study Hours`))
+data[!complete.cases(data),]
 
 #Depression
 mode_depression <- names(sort(table(data$Depression), decreasing = TRUE))[1]
 data$Depression[is.na(data$Depression)] <- mode_depression
+data[!complete.cases(data),]
 
 # Outliers Detection
 
@@ -68,7 +76,7 @@ iqr
 lower_bound <-  22 -  1.5 * iqr
 upper_bound <-  30 + 1.5 * iqr
 
-x[x < lower_bound | x > upper_bound] <- median(x)
+x[x < lower_bound | x > upper_bound] <- mean(x)
 x <- as.integer(round(x))
 
 boxplot(x)
@@ -97,6 +105,11 @@ data$`Academic Pressure` <- y
 #Noisy Value
 #Suicidal thought column
 unique(data$`Have you ever had suicidal thoughts ?`)
+barplot(table(data$`Have you ever had suicidal thoughts ?`),
+        main = "Noisy Values of Suicidal Thoughts", 
+        col = "skyblue",
+        ylab = "Count")
+
 data <- data %>%
   mutate(suicidal_thoughts_clean = case_when(
     tolower(`Have you ever had suicidal thoughts ?`) %in% c("yes", "yess") ~ "Yes",
@@ -186,6 +199,19 @@ mean_age
 
 median_Academic_pressure <- median(data$`Academic Pressure`)
 median_Academic_pressure
+
+summary_table <- data.frame(
+  Statistic = c("Sleep Duration (Mode)", 
+                "Dietary Habits (Mode)",
+                "Age (Mean)",
+                "Academic Pressure (Median)"),
+  Value = c(sleep_duration_mode, 
+            habit_mode,
+            round(mean_age, 2),
+            round(median_Academic_pressure, 2))
+)
+
+print(summary_table)
 
 
 ## For Study Hours
